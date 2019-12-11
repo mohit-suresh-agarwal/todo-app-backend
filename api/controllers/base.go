@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"    //mysql database driver
-
+	"github.com/mohit/todo-app-backend/api/models"
 )
 
 type Server struct {
@@ -29,6 +29,8 @@ func (server *Server) Initialize(Dbdriver, DbUser, DbPassword, DbPort, DbHost, D
 		fmt.Printf("We are connected to the %s database", Dbdriver)
 	}
 	
+	server.DB.Debug().AutoMigrate(&models.User{}, &models.Task{})
+
 	server.Router = mux.NewRouter()
 
 	server.initializeRoutes()
