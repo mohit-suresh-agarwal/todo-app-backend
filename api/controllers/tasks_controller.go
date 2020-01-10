@@ -55,10 +55,15 @@ func (server *Server) CreateTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *Server) GetTasks(w http.ResponseWriter, r *http.Request) {
-
+	fmt.Println("--<<>>>>>" , r)
 	task := models.Task{}
 
-	tasks, err := task.FindAllTasks(server.DB)
+	uid, err := auth.ExtractTokenID(r)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+	tasks, err := task.FindAllTasks(server.DB , uint(uid))
 	if err != nil {
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return

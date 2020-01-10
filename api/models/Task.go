@@ -5,7 +5,7 @@ import(
 	"html"
 	"strings"
 	"errors"
-	_"fmt"
+	"fmt"
 )
 
 type Task struct {
@@ -45,6 +45,7 @@ func (p *Task) SaveTask(db *gorm.DB) (*Task, error) {
 		return &Task{}, err
 	}
 	if p.ID != 0 {
+		
 		err = db.Debug().Model(&User{}).Where("id = ?", p.AuthorID).Take(&p.Author).Error
 		if err != nil {
 			return &Task{}, err
@@ -53,10 +54,11 @@ func (p *Task) SaveTask(db *gorm.DB) (*Task, error) {
 	return p, nil
 }
 
-func (p *Task) FindAllTasks(db *gorm.DB) (*[]Task, error) {
+func (p *Task) FindAllTasks(db *gorm.DB, uid uint) (*[]Task, error) {
 	var err error
 	tasks := []Task{}
-	err = db.Debug().Model(&Task{}).Limit(100).Find(&tasks).Error
+	fmt.Println("---<<<HERE")
+	err = db.Debug().Model(&Task{}).Where("author_id = ?", uid).Limit(100).Find(&tasks).Error
 	if err != nil {
 		return &[]Task{}, err
 	}
